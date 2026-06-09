@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCI — Trend Character Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" as="style">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html[data-theme="dark"]{
+  --bg:#0F0F11;--bg2:#17171A;--bg3:#1E1E22;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#EEEEF0;--muted:#888890;
+  --accent:#A8E6CF;--good:#52C8A0;--warn:#F4C842;--bad:#E8715A;
+  --modal-bg:#1A1A1E;--modal-row:rgba(255,255,255,0.04);
+  --notice-bg:rgba(255,255,255,0.04);--notice-border:rgba(255,255,255,0.08);
+  --notice-sub-border:rgba(255,255,255,0.06);
+  --chart-bar:rgba(168,230,207,0.2);--chart-line:#52C8A0;--chart-fill:rgba(82,200,160,0.05);
+  --grid-color:rgba(255,255,255,0.06);--tick-color:#888890;
+  --mc-bar-bg:rgba(255,255,255,0.08);
+  --type-row-border:rgba(255,255,255,0.05);
+  --date-bg:rgba(255,255,255,0.03);
+  --date-input-bg:rgba(255,255,255,0.06);
+  --tooltip-bg:rgba(15,15,17,0.95);--tooltip-border:rgba(255,255,255,0.1);
+  --result-tag-bg:rgba(255,255,255,0.03);
+}
+body[data-theme="dark"]{
+  --bg:#0F0F11;--bg2:#17171A;--bg3:#1E1E22;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#EEEEF0;--muted:#888890;
+  --accent:#A8E6CF;--good:#52C8A0;--warn:#F4C842;--bad:#E8715A;
+  --modal-bg:#1A1A1E;--modal-row:rgba(255,255,255,0.04);
+  --notice-bg:rgba(255,255,255,0.04);--notice-border:rgba(255,255,255,0.08);
+  --notice-sub-border:rgba(255,255,255,0.06);
+  --chart-bar:rgba(168,230,207,0.2);--chart-line:#52C8A0;--chart-fill:rgba(82,200,160,0.05);
+  --grid-color:rgba(255,255,255,0.06);--tick-color:#888890;
+  --mc-bar-bg:rgba(255,255,255,0.08);
+  --type-row-border:rgba(255,255,255,0.05);
+  --date-bg:rgba(255,255,255,0.03);
+  --date-input-bg:rgba(255,255,255,0.06);
+  --tooltip-bg:rgba(15,15,17,0.95);--tooltip-border:rgba(255,255,255,0.1);
+  --result-tag-bg:rgba(255,255,255,0.03);
+}
+html[data-theme="light"]{
+  --bg:#F8F8FA;--bg2:#FFFFFF;--bg3:#F0F0F3;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1A1A1E;--muted:#666670;
+  --accent:#2A9D7A;--good:#2A9D7A;--warn:#C49A00;--bad:#C0392B;
+  --modal-bg:#FFFFFF;--modal-row:rgba(0,0,0,0.06);
+  --notice-bg:rgba(0,0,0,0.06);--notice-border:rgba(0,0,0,0.1);
+  --notice-sub-border:rgba(0,0,0,0.08);
+  --chart-bar:rgba(42,157,122,0.2);--chart-line:#52C8A0;--chart-fill:rgba(42,157,122,0.06);
+  --grid-color:rgba(0,0,0,0.06);--tick-color:#666670;
+  --mc-bar-bg:rgba(0,0,0,0.08);
+  --type-row-border:rgba(0,0,0,0.05);
+  --date-bg:rgba(0,0,0,0.03);
+  --date-input-bg:rgba(0,0,0,0.06);
+  --tooltip-bg:rgba(255,255,255,0.97);--tooltip-border:rgba(0,0,0,0.12);
+  --result-tag-bg:rgba(0,0,0,0.04);
+}
+body[data-theme="light"]{
+  --bg:#F8F8FA;--bg2:#FFFFFF;--bg3:#F0F0F3;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1A1A1E;--muted:#666670;
+  --accent:#2A9D7A;--good:#2A9D7A;--warn:#C49A00;--bad:#C0392B;
+  --modal-bg:#FFFFFF;--modal-row:rgba(0,0,0,0.06);
+  --notice-bg:rgba(0,0,0,0.06);--notice-border:rgba(0,0,0,0.1);
+  --notice-sub-border:rgba(0,0,0,0.08);
+  --chart-bar:rgba(42,157,122,0.2);--chart-line:#52C8A0;--chart-fill:rgba(42,157,122,0.06);
+  --grid-color:rgba(0,0,0,0.06);--tick-color:#666670;
+  --mc-bar-bg:rgba(0,0,0,0.08);
+  --type-row-border:rgba(0,0,0,0.05);
+  --date-bg:rgba(0,0,0,0.03);
+  --date-input-bg:rgba(0,0,0,0.06);
+  --tooltip-bg:rgba(255,255,255,0.97);--tooltip-border:rgba(0,0,0,0.12);
+  --result-tag-bg:rgba(0,0,0,0.04);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);transition:background 0.25s,color 0.25s;font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','-apple-system','BlinkMacSystemFont','Malgun Gothic',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(168,230,207,0.04) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(133,193,233,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 24px 80px}
+
+/* 홈 */
+#home{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 0}
+.home-greeting{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:clamp(32px,5vw,52px);line-height:1.15;margin-bottom:10px}
+.home-greeting em{font-style:italic;color:var(--accent)}
+.home-sub{font-size:15px;color:var(--muted);margin-bottom:32px;font-weight:300}
+.search-wrap{position:relative;margin-bottom:12px}
+.search-box{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:13px 50px 13px 18px;font-size:15px;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.2s}
+.search-box::placeholder{color:var(--muted)}
+.search-box:focus{border-color:rgba(168,230,207,0.4)}
+.search-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--accent);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity 0.2s}
+.search-btn:hover{opacity:0.85}
+.search-btn svg{width:16px;height:16px;fill:var(--bg)}
+
+/* 날짜 설정 */
+.date-row{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.date-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.date-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--text);font-family:inherit;outline:none;width:130px}
+.date-input:focus{border-color:rgba(168,230,207,0.4)}
+.date-note{font-size:11px;color:var(--muted)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg2);color:var(--muted);cursor:pointer;transition:all 0.15s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip-cat{font-size:10px;opacity:0.6;margin-left:3px}
+
+/* 로딩 */
+#loading{display:none;padding:80px 0;text-align:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+.loading-text{font-size:14px;color:var(--muted)}
+
+/* not found */
+#notfound{display:none;padding:60px 0;text-align:center}
+.nf-title{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:28px;margin-bottom:10px;color:var(--muted)}
+.nf-sub{font-size:14px;color:var(--muted);margin-bottom:20px}
+
+/* 결과 */
+#result{display:none;padding-top:40px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:inherit;margin-bottom:32px;transition:color 0.15s}
+.back-btn:hover{color:var(--text)}
+.result-kw{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:clamp(28px,4vw,44px);line-height:1.1;margin-bottom:8px}
+.result-kw em{font-style:italic;color:var(--accent)}
+.result-meta{font-size:12px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px}
+.meta-tag{background:var(--bg3);padding:3px 8px;border-radius:6px;border:1px solid var(--border)}
+
+/* 부분분석 배너 */
+.partial-banner{background:rgba(244,200,66,0.08);border:1px solid rgba(244,200,66,0.25);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start}
+.partial-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.partial-title{font-size:14px;font-weight:600;color:var(--warn);margin-bottom:4px}
+.partial-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* TCI 점수 카드 */
+.tci-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:26px 30px;display:flex;align-items:center;gap:28px;margin-bottom:18px;flex-wrap:wrap}
+.tci-score{font-family:'Instrument Serif',serif;font-size:80px;line-height:1;letter-spacing:-2px}
+.tci-score sup{font-size:22px;color:var(--muted);font-family:'Pretendard',sans-serif;font-weight:300}
+.tci-info{flex:1;min-width:180px}
+.tci-badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:10px;font-weight:500;letter-spacing:0.05em}
+.tci-verdict{font-size:17px;font-weight:600;margin-bottom:6px}
+.tci-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* 유형 배지 카드 */
+.type-badge-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:22px 28px;margin-bottom:18px;display:flex;flex-direction:column;gap:8px}
+.type-badge-card .tci-badge{display:inline-block;font-size:12px;padding:4px 12px;border-radius:20px;margin-bottom:2px;font-weight:500;letter-spacing:0.05em;align-self:flex-start}
+.type-badge-card .tci-verdict{font-size:17px;font-weight:600}
+.type-badge-card .tci-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* 지표 그리드 */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:580px){.metrics-grid{grid-template-columns:1fr}}
+.mc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px}
+.mc-lbl{font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-bottom:8px}
+.mc-val{font-size:30px;font-weight:600;line-height:1;margin-bottom:6px}
+.mc-bar-wrap{height:3px;background:var(--mc-bar-bg);border-radius:2px;overflow:hidden;margin-bottom:7px}
+.mc-bar{height:100%;border-radius:2px}
+.mc-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.mc-na{font-size:22px;font-weight:600;line-height:1;margin-bottom:6px;color:var(--muted)}
+
+/* 차트 */
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.chart-title{font-size:14px;font-weight:500;margin-bottom:3px}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.leg-dot{width:12px;height:3px;border-radius:2px;flex-shrink:0}
+.chart-wrap{position:relative;height:220px}
+@media(max-width:580px){.chart-wrap{height:180px}}
+
+/* 유사 검색어 추천 */
+.nf-suggest{font-size:12px;color:var(--muted);margin-bottom:8px}
+.nf-suggest em{color:#52C8A0;font-style:normal}
+
+/* 레이더 */
+.radar-wrap{position:relative;height:240px;max-width:280px;margin:0 auto}
+
+/* 2열 */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:580px){.two-col{grid-template-columns:1fr}}
+
+/* 타임라인 */
+.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:5px;top:13px;bottom:0;width:1px;background:var(--border)}
+.tl-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tl-date{font-size:11px;color:var(--muted);margin-bottom:2px}
+.tl-text{font-size:13px;color:var(--text);line-height:1.5}
+
+/* 결론 */
+.verdict-card{border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid}
+.v-title{font-size:15px;font-weight:600;margin-bottom:8px}
+.v-body{font-size:13px;line-height:1.8;color:var(--muted)}
+.v-body strong{color:var(--text);font-weight:500}
+
+/* 유형표 */
+.type-table-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.type-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--type-row-border)}
+.type-row:last-child{border-bottom:none}
+.type-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.type-name{font-size:12px;font-weight:500;min-width:110px}
+.type-range{font-size:11px;color:var(--muted);min-width:40px}
+.type-desc{flex:1;font-size:11px;color:var(--muted)}
+.type-ex{font-size:11px;color:var(--muted);text-align:right;min-width:100px}
+
+@media(max-width:580px){
+  .type-row{flex-direction:column;align-items:flex-start;gap:4px;padding:12px 0}
+  .type-name{min-width:unset;display:flex;align-items:center;gap:6px}
+  .type-desc{min-width:unset;white-space:normal}
+  .type-ex{text-align:left;min-width:unset}
+}
+
+/* 점수 계산 */
+.calc-grid{display:grid;gap:12px}
+.calc-item{display:flex;gap:10px;align-items:flex-start}
+.calc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.calc-name{font-size:12px;font-weight:500;margin-bottom:5px}
+.calc-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.score-chips{display:flex;gap:4px;flex-wrap:wrap}
+.sc{font-size:10px;padding:3px 7px;border-radius:5px;text-align:center}
+
+/* 애니메이션 */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp 0.4s ease forwards;opacity:0}
+.d1{animation-delay:0.05s}.d2{animation-delay:0.1s}.d3{animation-delay:0.15s}.d4{animation-delay:0.2s}.d5{animation-delay:0.25s}
+
+/* 홈 안내 박스 */
+.period-notice{background:var(--notice-bg);border:1px solid var(--notice-border);border-radius:14px;padding:16px 20px;margin-top:12px;max-width:480px;width:100%}
+.period-notice-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;letter-spacing:0.02em}
+.period-notice-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.period-notice-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.period-notice-row strong{color:var(--text);font-weight:500}
+.period-notice-icon{font-size:13px;flex-shrink:0}
+.period-notice-sub{font-size:11px;color:var(--muted);border-top:1px solid var(--notice-sub-border);padding-top:8px;margin-top:2px}
+
+/* 홈 안내 텍스트 */
+.period-guide{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px;margin-bottom:4px}
+.period-tag{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--result-tag-bg);display:flex;align-items:center;gap:5px}
+.period-tag em{color:var(--text);font-style:normal;font-weight:500}
+.period-note{font-size:11px;color:var(--muted);text-align:center;margin-bottom:14px;opacity:0.7}
+
+/* 팝업 모달 */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--modal-bg);border:1px solid var(--border2);border-radius:20px;padding:28px;max-width:420px;width:100%;animation:fadeUp 0.3s ease forwards;position:relative;z-index:1001}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.modal-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.modal-row{background:var(--modal-row);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.modal-icon{font-size:18px;flex-shrink:0}
+.modal-row-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px}
+.modal-row-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.modal-footer{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal-check{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none}
+.modal-check input{accent-color:#52C8A0;cursor:pointer}
+.modal-confirm{background:#52C8A0;color:#0A0A0C;font-size:13px;font-weight:600;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;transition:opacity 0.15s;-webkit-appearance:none;touch-action:manipulation;min-height:44px;pointer-events:auto}
+.modal-confirm:hover{opacity:0.85}
+
+/* 결과 화면 날짜 변경 */
+.date-adjust{background:var(--date-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.date-adjust-label{font-size:11px;color:var(--muted);white-space:nowrap}
+.date-adjust input[type="date"]{background:var(--date-input-bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:12px;padding:5px 9px;width:130px;outline:none;cursor:pointer;color-scheme:dark}
+.date-adjust input[type="date"]:focus{border-color:rgba(82,200,160,0.4)}
+.date-adjust input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}
+.date-adjust-btn{font-size:11px;padding:5px 12px;border-radius:7px;border:1px solid rgba(82,200,160,0.3);background:rgba(82,200,160,0.1);color:#52C8A0;cursor:pointer;transition:opacity 0.15s;white-space:nowrap}
+.date-adjust-btn:hover{opacity:0.8}
+.date-adjust-reset{font-size:11px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer}
+.date-adjust-info{font-size:11px;color:var(--muted);margin-left:auto}
+@media(max-width:580px){.date-adjust{flex-direction:column;align-items:flex-start}.date-adjust-info{margin-left:0}}
+
+/* ── 다크/라이트 토글 ── */
+.theme-toggle{
+  position:fixed;top:18px;right:20px;z-index:9999;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:999px;padding:5px 6px;
+  display:flex;align-items:center;gap:3px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.18);
+  transition:background 0.2s,border 0.2s;
+}
+.theme-toggle .tog-opt{
+  font-size:11px;font-weight:600;letter-spacing:0.02em;
+  padding:4px 11px;border-radius:999px;
+  transition:background 0.2s,color 0.2s;
+  color:var(--muted);
+  user-select:none;
+}
+.theme-toggle .tog-opt.active{
+  background:var(--good);color:#fff;
+}
+</style>
+<script>
+(function(){
+  function getCookie(n){
+    var m = document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  var t;
+  try { t = localStorage.getItem('tci-theme'); } catch(e){}
+  if(!t) t = getCookie('tci-theme');
+  if(!t) t = 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  document.addEventListener('DOMContentLoaded', function(){
+    document.body.setAttribute('data-theme', t);
+  });
+})();
+</script></head>
+<body>
+<div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+  <div class="tog-opt" id="tog-dark">🌙 Dark</div>
+  <div class="tog-opt" id="tog-light">☀️ Light</div>
+</div>
+
+<div class="page">
+
+<!-- 팝업 모달 -->
+<div id="guide-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--modal-bg);border:1px solid var(--border2);border-radius:20px;padding:28px;max-width:420px;width:calc(100% - 40px);box-sizing:border-box">
+    <div style="font-size:16px;font-weight:600;margin-bottom:6px;color:var(--text)">TCI 분석 기간 안내</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6">TCI는 콘텐츠 장르에 따라 최적의 분석 기간을 자동으로 적용합니다.<br>필요하면 결과 화면에서 기간을 직접 변경할 수 있어요.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+      <div style="background:var(--modal-row);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px">
+        <div style="font-size:18px;flex-shrink:0">🎵</div>
+        <div>
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">음악</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">발화 이벤트 기준 <strong style="color:var(--text)">전 6주 / 후 24주</strong><br>역주행·이벤트형은 해당 이벤트 날짜 기준으로 설정하세요</div>
+        </div>
+      </div>
+      <div style="background:var(--modal-row);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px">
+        <div style="font-size:18px;flex-shrink:0">🎬</div>
+        <div>
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">드라마 · 영화</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">첫 공개일 기준 <strong style="color:var(--text)">전 6주 / 후 12주</strong><br>OTT 역주행의 경우 OTT 공개일 기준으로 설정하세요</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="modal-no-show" style="accent-color:#52C8A0"> 다시 보지 않기
+      </label>
+      <button id="modal-confirm-btn" style="background:#52C8A0;color:#0A0A0C;font-size:13px;font-weight:600;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;min-height:44px;min-width:80px;-webkit-appearance:none">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 홈 -->
+<div id="home">
+  <div class="home-greeting fu">오늘은 어떤<br><em>트렌드</em>를 분석할까요?</div>
+  <div class="home-sub fu d1">TCI — Trend Character Index<br>트렌드 유형 분석 지표</div>
+
+  <div class="search-wrap fu d2">
+    <input type="hidden" id="dateStart"/>
+    <input type="hidden" id="dateEnd"/>
+    <input class="search-box" id="homeInput" type="text" placeholder="아티스트명, 드라마명, 영화명을 입력하세요..." autocomplete="off"/>
+    <button class="search-btn" onclick="doSearch(document.getElementById('homeInput').value)" aria-label="검색">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <div class="chips fu d3">
+    <div class="chip" onclick="doSearch('선업튀')">선재 업고 튀어</div>
+    <div class="chip" onclick="doSearch('우영우')">이상한 변호사 우영우</div>
+    <div class="chip" onclick="doSearch('파친코')">파친코</div>
+    <div class="chip" onclick="doSearch('외계인')">외계+인 1부</div>
+    <div class="chip" onclick="doSearch('극한직업')">극한직업</div>
+    <div class="chip" onclick="doSearch('WOODZ')">WOODZ — Drowning</div>
+    <div class="chip" onclick="doSearch('러브어택')">리센느 — LOVE ATTACK</div>
+    <div class="chip" onclick="doSearch('에스파')">에스파 — Black Mamba</div>
+    <div class="chip" onclick="doSearch('엔하이픈')">엔하이픈 — Polaroid Love</div>
+    <div class="chip" onclick="doSearch('지올팍')">지올팍 — CHRISTIAN</div>
+  </div>
+
+  <div class="period-notice fu d4">
+    <div class="period-notice-title">검색 기간이 자동으로 적용돼요</div>
+    <div class="period-notice-rows">
+      <div class="period-notice-row"><span class="period-notice-icon">🎵</span><span><strong>음악</strong> — 발화 이벤트 기준 전 6주 · 후 24주</span></div>
+      <div class="period-notice-row"><span class="period-notice-icon">🎬</span><span><strong>드라마 · 영화</strong> — 첫 공개일 기준 전 6주 · 후 12주</span></div>
+    </div>
+    <div class="period-notice-sub">결과 화면에서 날짜를 직접 변경할 수도 있어요</div>
+  </div>
+</div>
+
+<!-- 로딩 -->
+<div id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">데이터 분석 중...</div>
+</div>
+
+<!-- 검색 결과 없음 -->
+<div id="notfound">
+  <div class="nf-title">분석된 사례가 없어요</div>
+  <div id="nf-suggest-wrap"></div>
+  <div class="nf-sub">현재 지원하는 사례</div>
+  <div class="chips" style="justify-content:center">
+    <div class="chip" onclick="doSearch('선업튀')">선업튀</div>
+    <div class="chip" onclick="doSearch('우영우')">우영우</div>
+    <div class="chip" onclick="doSearch('파친코')">파친코</div>
+    <div class="chip" onclick="doSearch('외계인')">외계+인</div>
+    <div class="chip" onclick="doSearch('극한직업')">극한직업</div>
+    <div class="chip" onclick="doSearch('WOODZ')">WOODZ</div>
+    <div class="chip" onclick="doSearch('러브어택')">LOVE ATTACK</div>
+    <div class="chip" onclick="doSearch('에스파')">에스파</div>
+    <div class="chip" onclick="doSearch('엔하이픈')">엔하이픈</div>
+    <div class="chip" onclick="doSearch('지올팍')">CHRISTIAN</div>
+  </div>
+</div>
+
+<!-- 결과 -->
+<div id="result">
+  <button class="back-btn" onclick="goHome()">
+    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" width="14" height="14"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    처음으로
+  </button>
+  <div class="fu">
+    <div class="result-kw" id="r-title"></div>
+    <div class="result-meta" id="r-meta"></div>
+  </div>
+  <div id="partial-banner" style="display:none" class="partial-banner fu d1">
+    <div class="partial-icon">⚠</div>
+    <div>
+      <div class="partial-title">데이터 수집 기간 부족 — 부분 분석</div>
+      <div class="partial-desc">분석 데이터가 3개월 미만으로, TCI 종합 점수 산출이 어렵습니다. <strong style="color:var(--text)">발화 선행성과 상관계수는 참고용으로 표시</strong>하며, 지속성은 데이터 축적 후 업데이트됩니다.</div>
+    </div>
+  </div>
+
+  <!-- 날짜 변경 UI -->
+  <div class="date-adjust fu d1" id="date-adjust-bar">
+    <div class="date-adjust-label">📅 분석 기간</div>
+    <input type="date" id="adj-start"/>
+    <span style="font-size:11px;color:var(--muted)">~</span>
+    <input type="date" id="adj-end" placeholder="자동"/>
+    <button class="date-adjust-btn" onclick="applyDateAdjust()">적용</button>
+    <button class="date-adjust-reset" onclick="resetDateAdjust()">기본값</button>
+    <div class="date-adjust-info" id="adj-info"></div>
+  </div>
+  <!-- 유형 배지 카드 -->
+  <div class="type-badge-card fu d1" id="type-badge-card">
+    <div class="tci-badge" id="r-badge"></div>
+    <div class="tci-verdict" id="r-verdict"></div>
+    <div class="tci-desc" id="r-desc"></div>
+  </div>
+  <!-- 디버그 전용 TCI 점수 카드 (숨김) -->
+  <div class="tci-card fu d1" id="debug-tci-card" style="display:none">
+    <div><div style="font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-bottom:4px">TCI 종합 점수 (DEBUG)</div>
+    <div class="tci-score" id="r-score"></div></div>
+    <div class="tci-info">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px" id="debug-scores"></div>
+    </div>
+  </div>
+  <div class="chart-card fu d2">
+    <div class="chart-title">통합 검색량 vs 미디어 기사량</div>
+    <div class="chart-sub">통합 검색량 = 구글 웹 + 유튜브 + 네이버 평균 · 노란 점선 = 발화 이벤트</div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#52C8A0"></div>통합 검색량</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(168,230,207,0.4);height:10px;width:10px;border-radius:2px"></div>미디어 기사수</div>
+    </div>
+    <div class="chart-wrap"><canvas id="trendChart" role="img" aria-label="통합 검색량과 기사량 시계열 비교"></canvas></div>
+  </div>
+  <div class="chart-card fu d3" style="margin-bottom:16px">
+    <div class="chart-title" style="margin-bottom:14px">주요 타임라인</div>
+    <div id="timeline-wrap"></div>
+  </div>
+  <div class="verdict-card fu d4" id="verdict-card">
+    <div class="v-title" id="v-title"></div>
+    <div class="v-body" id="v-body"></div>
+  </div>
+  <div id="type-section"></div>
+</div>
+
+</div>
+
+<script>
+// ── 팝업 모달
+function closeModal(){
+  document.getElementById('guide-modal').style.display='none';
+  if(document.getElementById('modal-no-show').checked){
+    localStorage.setItem('tci-guide-seen','1');
+  }
+}
+
+const DB = {
+  'woodz':{
+    title:'WOODZ — Drowning',subtitle:'역주행',category:'음악',period:'2023.03 ~ 2023.10',
+    tci:null,init:null,sust:null,corr:null,corr_r:null,partial:false,algo:false,forceType:'데이터 기사량 부족',
+    verdict:'기사 데이터가 부족하여 유형 분류가 어렵습니다',
+    desc:'검색어 \'드라우닝\' 기준으로 구글 웹은 발매 후 5월부터, 네이버는 발매 전부터 검색량이 관찰됩니다. 기사 최대 5건으로 분류 기준치 미달입니다. 날짜를 멜론 1위 시점(2025-03 ~ 2025-10)으로 변경하면 참여자 주도형으로 분류됩니다.',
+    vTitle:'데이터 기사량 부족',
+    vBody:'주간 최대 기사수가 <strong>5건</strong>으로 유형 분류 기준치(20건)에 미달합니다. <strong>날짜를 멜론 1위 시점(2025-03-23 ~ 2025-10-26)으로 변경</strong>하면 참여자 주도형으로 분류됩니다.',
+    timeline:[
+      {date:'2023.03.12',text:'데이터 수집 시작 (발매일 6주 전)'},
+      {date:'2023.04.26',text:'Drowning 발매 — 피벗 (발매 당일 차트아웃)'},
+      {date:'2023.06~07',text:'검색량 서서히 성장'},
+      {date:'2023.10',text:'데이터 수집 종료'},
+    ],
+    labels:["2023-03-12","2023-03-19","2023-03-26","2023-04-02","2023-04-09","2023-04-16","2023-04-23","2023-04-30","2023-05-07","2023-05-14","2023-05-21","2023-05-28","2023-06-04","2023-06-11","2023-06-18","2023-06-25","2023-07-02","2023-07-09","2023-07-16","2023-07-23","2023-07-30","2023-08-06","2023-08-13","2023-08-20","2023-08-27","2023-09-03","2023-09-10","2023-09-17","2023-09-24","2023-10-01","2023-10-08","2023-10-15"],
+    combined:[7.0,7.6,18.9,12.2,9.6,9.0,10.4,31.0,33.7,37.7,54.7,45.0,37.8,35.2,45.4,78.6,94.0,73.1,58.2,40.4,40.4,43.2,48.2,34.6,42.0,41.8,45.0,37.8,51.2,33.8,32.8,28.1],
+    media:[0,0,2,0,5,0,3,2,1,0,5,1,0,1,3,0,0,0,0,0,0,2,0,0,0,0,0,4,1,0,0,0],
+    pivotIdx:7,
+    altLabel:'멜론 1위 기준',
+    'alt':{
+      period:'2025.03 ~ 2025.10',
+      verdict:'멜론 1위 전부터 검색이 압도적으로 선행한 참여자 주도형 역주행입니다',
+      desc:'멜론 1위(2025-05-07) 이전 7주 동안 기사는 0건이었지만 검색량은 이미 높게 유지되고 있었습니다. 완전한 대중 자생 역주행입니다.',
+      vTitle:'참여자 주도형 — 커뮤니티 자생 역주행',
+      vBody:'피벗(멜론 1위) 이전 구간에서 기사가 전혀 없는 상태에서도 검색량이 꾸준히 높게 유지됐습니다. 2025년 9월 전역 후 활동 재개 시점에 검색량이 다시 최고점을 기록하며 <strong>지속성도 높은 참여자 주도형</strong>임을 보여줍니다.',
+      timeline:[
+        {date:'2024.10.04',text:'불후의 명곡 국군의 날 특집 출연 — 역주행 시작'},
+        {date:'2024.10.14',text:'멜론 TOP100 첫 진입'},
+        {date:'2025.03.26',text:'데이터 수집 시작 (피벗 6주 전)'},
+        {date:'2025.05.07',text:'멜론 TOP100 1위 달성 — 피벗'},
+        {date:'2025.07.21',text:'전역 후 활동 재개'},
+        {date:'2025.09',text:'검색량 재피크 — 전역 후 활동 효과'},
+      ],
+      labels:["2025-03-23","2025-03-30","2025-04-06","2025-04-13","2025-04-20","2025-04-27","2025-05-04","2025-05-11","2025-05-18","2025-05-25","2025-06-01","2025-06-08","2025-06-15","2025-06-22","2025-06-29","2025-07-06","2025-07-13","2025-07-20","2025-07-27","2025-08-03","2025-08-10","2025-08-17","2025-08-24","2025-08-31","2025-09-07","2025-09-14","2025-09-21","2025-09-28","2025-10-05","2025-10-12","2025-10-19","2025-10-26"],
+      combined:[32.4,37.7,50.0,77.0,50.5,49.0,47.1,50.9,56.6,54.1,46.3,45.6,47.4,47.6,49.2,45.4,48.1,53.6,55.2,45.3,46.5,42.0,52.4,51.9,42.5,63.1,93.4,94.0,68.3,51.2,43.9,3.9],
+      media:[0,0,0,1,0,0,0,7,4,3,5,1,0,0,0,0,2,3,31,2,4,3,12,3,7,17,12,21,2,1,1,8],
+      pivotIdx:7,
+      forceType:'참여자 주도형',
+    }
+  },
+  '리센느':{
+    title:'리센느 — LOVE ATTACK',subtitle:'음원 발매 기준',category:'음악',period:'2024.07 ~ 2024.11',
+    tci:null,init:null,sust:null,corr:null,corr_r:null,partial:false,algo:false,
+    verdict:'발매 전 기사가 검색을 앞선 미디어 주도형 트렌드입니다',
+    desc:'발화 이전 구간에서 기사량이 검색량보다 크게 높게 나타났습니다. 발매 전 언론 보도가 먼저 나오고 이후 검색이 따라온 미디어 주도형 패턴입니다.',
+    vTitle:'미디어 주도형 — 발매 전 기사 선행',
+    vBody:'발매 이전 구간에서 기사가 먼저 나오고 검색량은 거의 0에 가까웠습니다. 발매 후 유튜브 중심으로 검색량이 올라온 미디어 주도형 패턴입니다.',
+    timeline:[
+      {date:'2024.07.14',text:'데이터 수집 시작 (발매일 6주 전)'},
+      {date:'2024.08.11',text:'발매 전 언론 보도 11건 집중'},
+      {date:'2024.08.27',text:'LOVE ATTACK 발매 — 피벗'},
+      {date:'2024.09.22~29',text:'검색량 최고점'},
+      {date:'2024.11',text:'검색량 하락'},
+    ],
+    labels:["2024-07-14","2024-07-21","2024-07-28","2024-08-04","2024-08-11","2024-08-18","2024-08-25","2024-09-01","2024-09-08","2024-09-15","2024-09-22","2024-09-29","2024-10-06","2024-10-13","2024-10-20","2024-10-27","2024-11-03","2024-11-10","2024-11-17","2024-11-24"],
+    combined:[0.0,0.0,0.1,0.0,0.1,0.0,0.0,8.9,20.9,33.2,54.6,63.8,55.6,51.0,23.9,17.0,11.1,11.7,8.3,1.0],
+    media:[0,0,0,1,11,5,4,2,3,22,2,23,0,5,3,0,3,0,0,2],
+    pivotIdx:7,
+    altLabel:'거제야호 밈 기준',
+    alt:{
+      period:'2026.02 ~ 2026.05',
+      verdict:'현재 진행 중인 트렌드 — 데이터 축적 후 재분류 예정입니다',
+      desc:'분석 기간이 3개월 미만으로 유형 확정이 어렵습니다. 거제야호 밈이 기사로 먼저 확산된 후 검색량이 따라온 패턴이 관찰됩니다.',
+      vTitle:'데이터 수집 기간 부족',
+      vBody:'리센느는 <strong>거제야호 밈</strong>을 통해 인지도를 얻은 케이스입니다. 기사가 검색량보다 먼저 올라간 패턴이 관찰되지만, 지속성 측정을 위해 <strong>데이터 축적이 필요</strong>합니다.',
+      timeline:[
+        {date:'2026.02',text:'리센느 활동 시작'},
+        {date:'2026.03',text:'거제야호 밈 확산 → 미디어 기사 증가'},
+        {date:'2026.05',text:'검색량 급등 — 현재 진행 중'},
+      ],
+      labels:["2026-02-08","2026-02-15","2026-02-22","2026-03-01","2026-03-08","2026-03-15","2026-03-22","2026-03-29","2026-04-05","2026-04-12","2026-04-19","2026-04-26","2026-05-03","2026-05-10","2026-05-17","2026-05-24","2026-05-31"],
+      combined:[2.6,2.3,2.5,2.5,2.4,2.0,2.5,4.3,5.1,4.7,3.5,4.3,13.8,22.7,35.5,74.5,92.7],
+      media:[0,0,2,1,0,3,0,3,7,6,1,0,1,0,3,7,6],
+      pivotIdx:12,
+      forceType:'데이터 수집 기간 부족',
+    }
+  },
+  '선업튀':{
+    title:'선재 업고 튀어',subtitle:'넷플릭스 드라마',category:'드라마',period:'2024.02 ~ 2024.07',
+    tci:6.6,init:7.6,sust:8,corr:4,corr_r:0.551,partial:false,
+    verdict:'자생적 관심과 넷플릭스 마케팅이 함께 작용한 혼합형 트렌드입니다',
+    desc:'발화 이벤트 전 구간에서 검색량이 기사량보다 높게 나타났습니다. 자생적 대중 관심과 넷플릭스 마케팅이 공존한 혼합형 패턴입니다.',
+    vTitle:'혼합형 — 자생적 관심과 마케팅의 공존',
+    vBody:'발화 이전 구간에서 검색 증가가 기사 증가보다 빠르게 나타났습니다. 자생적 대중 관심과 넷플릭스 마케팅이 공존한 혼합형 트렌드입니다.',
+    timeline:[
+      {date:'2024.02.25',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2024.04.22',text:'선재 업고 튀어 첫 방영 — 피벗'},
+      {date:'2024.05',text:'넷플릭스 글로벌 차트 진입 · 미디어 대규모 보도'},
+      {date:'2024.05~06',text:'검색량·기사량 동반 최고점'},
+      {date:'2024.06',text:'종영 이후 검색량 하락'},
+    ],
+    labels:["2024-02-25","2024-03-03","2024-03-10","2024-03-17","2024-03-24","2024-03-31","2024-04-07","2024-04-14","2024-04-21","2024-04-28","2024-05-05","2024-05-12","2024-05-19","2024-05-26","2024-06-02","2024-06-09","2024-06-16","2024-06-23","2024-06-30","2024-07-07"],
+    combined:[0.0,0.6,0.8,0.9,1.3,1.7,18.4,40.1,44.0,63.0,85.3,89.0,89.9,97.8,67.1,32.3,25.0,20.1,16.2,2.7],
+    media:[0,0,0,0,0,0,4,1,7,9,11,31,30,62,72,50,38,25,13,2],
+    pivotIdx:6
+  },
+  '파친코':{
+    title:'파친코',subtitle:'애플TV+ 드라마',category:'영화',period:'2022.02 ~ 2022.06',
+    tci:4.7,init:5.7,sust:8,corr:1,corr_r:0.818,partial:false,
+    verdict:'기사·플랫폼 마케팅이 검색을 앞선 미디어 주도형 트렌드입니다',
+    desc:'발화 이전 구간에서 기사량이 검색량보다 높게 나타났습니다. 검색량과 기사량의 동조 패턴이 강하게 나타나며 플랫폼 마케팅이 선행한 미디어 주도형입니다.',
+    vTitle:'미디어 주도형 — 플랫폼 마케팅 선행',
+    vBody:'발화 이전 구간에서 기사 증가가 검색 증가를 앞섰습니다. 검색량과 기사량이 강하게 동조하며 플랫폼 공개 효과가 강했던 사례입니다.',
+    timeline:[
+      {date:'2022.02.06',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2022.03.25',text:'애플TV+ 파친코 시즌1 공개 — 피벗'},
+      {date:'2022.03~04',text:'검색량·기사량 동시 최고점'},
+      {date:'2022.05~',text:'빠른 관심 소멸'},
+    ],
+    labels:["2022-02-06","2022-02-13","2022-02-20","2022-02-27","2022-03-06","2022-03-13","2022-03-20","2022-03-27","2022-04-03","2022-04-10","2022-04-17","2022-04-24","2022-05-01","2022-05-08","2022-05-15","2022-05-22","2022-05-29","2022-06-05","2022-06-12","2022-06-19"],
+    combined:[0.0,0.1,0.5,1.2,1.0,3.2,40.3,95.3,93.2,84.0,62.6,44.4,37.0,22.3,13.4,8.6,7.0,6.6,4.7,1.0],
+    media:[0,1,0,6,0,0,85,102,44,52,43,32,41,43,11,15,10,5,4,29],
+    pivotIdx:6
+  },
+  '외계인':{
+    title:'외계+인 1부',subtitle:'극장 개봉 → OTT 역주행',category:'영화',period:'2022.05 ~ 2023.01',
+    tci:8.1,init:10,sust:4,corr:6,corr_r:0.387,partial:false,
+    verdict:'극장 실패 후 OTT에서 자생적으로 재발화한 참여자 주도형 트렌드입니다',
+    desc:'OTT 공개 후 검색량 증가가 기사량보다 훨씬 빠르게 나타났습니다. 극장 흥행 실패 후 넷플릭스에서 11일 연속 정상을 기록하며 역주행한 자생적 패턴입니다.',
+    vTitle:'참여자 주도형 — 자생적 OTT 역주행',
+    vBody:'OTT 공개 후 검색량이 기사량보다 훨씬 빠르게 증가했습니다. 시청자들의 자발적 관심이 미디어 보도를 앞선 자생적 재발화 사례입니다.',
+    timeline:[
+      {date:'2022.07.13',text:'극장 개봉 — 흥행 부진'},
+      {date:'2022.11',text:'넷플릭스 공개 → 11일 연속 정상'},
+      {date:'2023.01',text:'OTT 역주행 검색량 최고점'},
+    ],
+    labels:["2022-05-01","2022-05-15","2022-05-29","2022-06-12","2022-06-26","2022-07-10","2022-07-24","2022-08-07","2022-08-21","2022-09-04","2022-09-18","2022-10-02","2022-10-16","2022-10-30","2022-11-13","2022-11-27","2022-12-11","2022-12-25","2023-01-08","2023-01-22"],
+    combined:[3.8,2.5,0.9,5.9,6.2,17.8,91.5,32.7,32.2,23.1,15.9,13.2,4.1,6.0,36.9,30.1,18.8,35.4,48.8,73.6],
+    media:[0,3,1,0,147,11,137,24,1,2,0,1,0,1,1,0,0,1,1,2],
+    pivotIdx:5
+  },
+  '우영우':{
+    title:'이상한 변호사 우영우',subtitle:'ENA 드라마',category:'드라마',period:'2022.05 ~ 2022.09',
+    tci:5.2,init:6.0,sust:8,corr:2,corr_r:0.613,partial:false,
+    verdict:'방영 전부터 검색이 기사를 앞선 참여자 주도형 트렌드입니다',
+    desc:'발화 이전 구간에서 검색량이 기사량보다 1.63배 높게 나타났습니다. 방영 전부터 대중 관심이 먼저 형성됐고 기사는 방영 후 2~3주 지나 폭발한 참여자 주도형 패턴입니다.',
+    vTitle:'참여자 주도형 — 방영 전 대중 관심 선행',
+    vBody:'발화 이전 구간에서 검색량이 기사량을 앞섰습니다. 방영 직후 검색이 빠르게 급등하고 기사는 2~3주 후에 폭발한 패턴으로, 대중 관심이 미디어 보도를 선행한 참여자 주도형 사례입니다.',
+    timeline:[
+      {date:'2022.05.15',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2022.06.29',text:'이상한 변호사 우영우 첫 방영 — 피벗'},
+      {date:'2022.07',text:'검색량 급등 선행 → 기사량 2~3주 후 폭발'},
+      {date:'2022.07~08',text:'넷플릭스 글로벌 차트 진입 · 역대 ENA 최고 시청률'},
+      {date:'2022.08.18',text:'종영'},
+    ],
+    labels:["2022-05-15","2022-05-22","2022-05-29","2022-06-05","2022-06-12","2022-06-19","2022-06-26","2022-07-03","2022-07-10","2022-07-17","2022-07-24","2022-07-31","2022-08-07","2022-08-14","2022-08-21","2022-08-28","2022-09-04","2022-09-11","2022-09-18","2022-09-25"],
+    combined:[0.0,0.1,0.1,0.1,0.2,0.6,7.4,48.6,90.8,99.0,85.1,73.3,55.7,41.7,25.2,4.6,2.7,2.1,1.6,0.2],
+    media:[0,2,1,2,1,8,9,51,99,251,282,452,285,252,387,229,98,30,34,33],
+    pivotIdx:7
+  },
+  '극한직업':{
+    title:'극한직업',subtitle:'2019 흥행 영화',category:'영화',period:'2018.12 ~ 2019.04',
+    tci:6.2,init:4.7,sust:10,corr:6,corr_r:0.308,partial:false,
+    verdict:'개봉 전 마케팅 이후 입소문이 강하게 이어진 혼합형 트렌드입니다',
+    desc:'발화 이전 구간에서 기사량이 검색량보다 높았지만, 개봉 후 검색량이 오랫동안 높게 유지된 혼합형 패턴입니다. 마케팅과 입소문이 공존한 흥행 사례입니다.',
+    vTitle:'혼합형 — 마케팅 선행 후 강한 입소문',
+    vBody:'발화 이전 마케팅 기사가 먼저 나왔지만, 개봉 후 검색량이 오랫동안 높게 유지되며 입소문 효과가 매우 강하게 이어졌습니다. 마케팅과 입소문이 공존한 혼합형 흥행 사례입니다.',
+    timeline:[
+      {date:'2018.12.09',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2019.01.23',text:'극한직업 개봉 — 피벗'},
+      {date:'2019.02',text:'입소문 폭발 — 검색량 최고점'},
+      {date:'2019.02',text:'누적 관객 1000만 돌파'},
+    ],
+    labels:["2018-12-09","2018-12-16","2018-12-23","2018-12-30","2019-01-06","2019-01-13","2019-01-20","2019-01-27","2019-02-03","2019-02-10","2019-02-17","2019-02-24","2019-03-03","2019-03-10","2019-03-17","2019-03-24","2019-03-31","2019-04-07","2019-04-14","2019-04-21"],
+    combined:[0.0,0.7,0.8,0.3,1.2,1.4,3.6,43.8,46.7,48.7,46.3,47.0,42.3,55.2,63.1,36.3,29.5,21.6,19.6,0.9],
+    media:[0,4,142,8,11,145,43,126,207,282,223,137,64,31,30,17,12,7,3,0],
+    pivotIdx:6
+  },
+  '지올팍':{
+    title:'지올팍 — CHRISTIAN',subtitle:'역주행',category:'음악',period:'2023.01 ~ 2023.07',
+    tci:null,init:null,sust:null,corr:null,corr_r:null,partial:false,algo:true,
+    verdict:'기사 데이터가 부족하여 유형 분류가 어렵습니다',
+    desc:'빅카인즈 기준 주간 최대 기사수가 3건으로 분류 기준치(20건)에 미달합니다. 기사 없이 유튜브 쇼츠 알고리즘만으로 트렌드가 형성된 것으로 추정되는 사례입니다.',
+    vTitle:'데이터 기사량 부족',
+    vBody:'주간 최대 기사수가 <strong>3건</strong>으로 유형 분류 기준치(20건)에 미달합니다. 기사 없이 알고리즘만으로 트렌드가 형성될 수 있음을 보여주는 사례입니다.',
+    timeline:[
+      {date:'2023.01.08',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2023.02.16',text:'CHRISTIAN 발매 — 초기 소폭 반응'},
+      {date:'2023.03.01',text:'역주행 시작 — 유튜브 쇼츠 알고리즘 자생 확산'},
+      {date:'2023.04.16',text:'네이버 데이터랩·유튜브 기준 최고점'},
+      {date:'2023.07',text:'검색량 자연 소멸'},
+    ],
+    labels:["2023-01-08","2023-01-15","2023-01-22","2023-01-29","2023-02-05","2023-02-12","2023-02-19","2023-02-26","2023-03-05","2023-03-12","2023-03-19","2023-03-26","2023-04-02","2023-04-09","2023-04-16","2023-04-23","2023-04-30","2023-05-07","2023-05-14","2023-05-21","2023-05-28","2023-06-04","2023-06-11","2023-06-18","2023-06-25","2023-07-02","2023-07-09","2023-07-16","2023-07-23","2023-07-30"],
+    combined:[0.4,0.4,0.4,0.1,0.1,3.1,13.1,20.1,48.0,75.4,88.1,81.4,67.9,56.2,92.0,81.3,60.8,31.6,9.3,7.0,5.8,5.7,3.2,3.0,3.5,2.1,1.7,1.7,1.2,1.5],
+    media:[0,0,0,0,0,0,3,0,0,0,0,1,0,1,2,0,1,1,2,1,1,0,1,1,0,0,0,0,0,0],
+    pivotIdx:6
+  },
+  '블랙맘바':{
+    title:'에스파 — Black Mamba',subtitle:'SM 신인 걸그룹 데뷔곡',category:'음악',period:'2020.10 ~ 2021.05',
+    tci:null,init:null,sust:null,corr:null,corr_r:null,partial:false,algo:false,
+    verdict:'데뷔 전 언론 보도가 검색을 앞선 미디어 주도형 트렌드입니다',
+    desc:'발화 이전 구간에서 기사량이 검색량보다 약 2.9배 높게 나타났습니다. SM 소속 신인 걸그룹 데뷔 특성상 언론 보도가 선행된 전형적인 미디어 주도형 데뷔 케이스입니다.',
+    vTitle:'미디어 주도형 — 언론 보도 선행 데뷔',
+    vBody:'발화 이전 구간에서 기사량이 검색량을 앞섰습니다. SM 신인 걸그룹 데뷔에 따른 언론 보도가 먼저 대량으로 나온 후 대중 검색이 따라온 패턴입니다.',
+    timeline:[
+      {date:'2020.10.06',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2020.11.01',text:'데뷔 발표 기사 대량 보도 시작'},
+      {date:'2020.11.17',text:'Black Mamba 발매 — 피벗'},
+      {date:'2020.11.22',text:'검색량 최고점'},
+      {date:'2021.01',text:'빌보드 차트 진입'},
+    ],
+    labels:["2020-10-04","2020-10-11","2020-10-18","2020-10-25","2020-11-01","2020-11-08","2020-11-15","2020-11-22","2020-11-29","2020-12-06","2020-12-13","2020-12-20","2020-12-27","2021-01-03","2021-01-10","2021-01-17","2021-01-24","2021-01-31","2021-02-07","2021-02-14","2021-02-21","2021-02-28","2021-03-07","2021-03-14","2021-03-21","2021-03-28","2021-04-04","2021-04-11","2021-04-18","2021-04-25","2021-05-02","2021-05-09"],
+    combined:[0.7,1.2,1.6,7.2,17.7,17.1,65.7,92.0,67.6,48.1,40.7,32.7,32.9,27.0,29.4,32.4,26.1,23.1,22.9,24.3,23.1,17.8,17.7,17.3,16.5,18.6,15.4,14.7,17.3,8.5,15.1,1.1],
+    media:[0,0,0,0,115,46,46,35,17,52,43,8,44,11,21,8,0,62,48,5,9,1,2,1,2,12,0,1,6,0,0,5],
+    pivotIdx:6
+  },
+  '폴라럽':{
+    title:'엔하이픈 — Polaroid Love',subtitle:'팬덤 자생 확산',category:'음악',period:'2021.11 ~ 2022.06',
+    tci:null,init:null,sust:null,corr:null,corr_r:null,partial:false,algo:false,
+    verdict:'발매 전부터 팬들의 검색이 앞선 참여자 주도형 트렌드입니다',
+    desc:'발화 이전 구간에서 검색량이 기사량보다 약 4.4배 높게 나타났습니다. 발매 전부터 팬덤이 먼저 검색하고 있었으며 기사는 발매 후 2주 차에 집중된 참여자 주도형 패턴입니다.',
+    vTitle:'참여자 주도형 — 팬덤 자생 확산',
+    vBody:'발화 이전 구간에서 검색량이 기사량을 크게 앞섰습니다. 팬덤이 발매 전부터 검색을 주도했으며, 기사는 발매 후 성과가 나온 시점에 집중적으로 보도된 패턴입니다.',
+    timeline:[
+      {date:'2021.11.28',text:'데이터 수집 시작 (발화 이벤트 6주 전)'},
+      {date:'2022.01.03',text:'Polaroid Love 발매 — 피벗'},
+      {date:'2022.01.16',text:'기사 219건 집중 보도 — 음악방송 성과'},
+      {date:'2022.02~03',text:'검색량 최고점 유지'},
+    ],
+    labels:["2021-11-28","2021-12-05","2021-12-12","2021-12-19","2021-12-26","2022-01-02","2022-01-09","2022-01-16","2022-01-23","2022-01-30","2022-02-06","2022-02-13","2022-02-20","2022-02-27","2022-03-06","2022-03-13","2022-03-20","2022-03-27","2022-04-03","2022-04-10","2022-04-17","2022-04-24","2022-05-01","2022-05-08","2022-05-15","2022-05-22","2022-05-29","2022-06-05","2022-06-12","2022-06-19","2022-06-26","2022-07-03"],
+    combined:[3.0,14.0,16.7,19.4,25.0,28.7,29.4,48.3,59.5,63.0,71.1,73.3,62.4,60.9,69.6,60.1,50.7,45.9,41.3,35.0,35.5,32.8,31.1,32.1,33.5,29.9,29.5,31.8,27.4,31.3,29.2,0.8],
+    media:[0,11,17,8,17,14,24,219,34,7,11,16,3,5,1,4,7,0,0,2,2,4,1,10,7,0,2,1,3,11,4,5],
+    pivotIdx:5
+  }
+};
+
+const TYPE_MAP = [
+  {type:'참여자 주도형',      color:'#52C8A0', desc:'검색이 기사를 크게 선행 — 자생적 확산',    ex:'WOODZ(멜론1위) · 외계+인 · 폴라럽 · 우영우'},
+  {type:'혼합형',             color:'#85C1E9', desc:'검색·기사 비슷한 비율로 동반 성장',         ex:'극한직업 · 선업튀'},
+  {type:'미디어 주도형',      color:'#E8715A', desc:'기사·마케팅이 검색을 앞섬',                 ex:'파친코 · 블랙맘바 · LOVE ATTACK'},
+  {type:'데이터 기사량 부족', color:'#C8A8E9', desc:'주간 최대 기사수 20건 미만 — 분류 불가',   ex:'지올팍 · WOODZ(발매일)'},
+  {type:'데이터 수집 기간 부족', color:'#F4C842', desc:'피벗 이후 12주 미만 — 축적 후 재분류', ex:'리센느'},
+];
+
+let chartObj=null;
+
+function findCase(q){
+  const l=q.toLowerCase().replace(/\s/g,'');
+  if(l.includes('woodz')||l.includes('우즈')||l.includes('drowning')) return DB.woodz;
+  if(l.includes('리센느')||l.includes('risennne')||l.includes('거제')) return DB.리센느;
+  if(l.includes('선업튀')||l.includes('선재')||l.includes('sunup')) return DB.선업튀;
+  if(l.includes('우영우')||l.includes('변호사우영우')||l.includes('이상한변호사')) return DB.우영우;
+  if(l.includes('파친코')||l.includes('pachinko')) return DB.파친코;
+  if(l.includes('외계')||l.includes('alien')) return DB.외계인;
+  if(l.includes('극한직업')||l.includes('extrem')) return DB.극한직업;
+  if(l.includes('지올팍')||l.includes('zior')||l.includes('christian')) return DB.지올팍;
+  if(l.includes('블랙맘바')||l.includes('blackmamba')||l.includes('에스파')||l.includes('aespa')) return DB.블랙맘바;
+  if(l.includes('폴라럽')||l.includes('polaroid')||l.includes('엔하이픈')||l.includes('enhypen')) return DB.폴라럽;
+  if(l.includes('러브어택')||l.includes('loveattack')||l.includes('love attack')||l.includes('rescene')) return DB.리센느;
+  return null;
+}
+
+function doSearch(q){
+  if(!q||!q.trim()) return;
+  ['home','result','notfound'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('loading').style.display='block';
+  const msgs=['데이터 불러오는 중...','검색량 분석 중...','기사량 비교 중...','TCI 계산 중...'];
+  let mi=0;
+  const lt=document.getElementById('loadingText');
+  const iv=setInterval(()=>{lt.textContent=msgs[++mi%msgs.length];},400);
+  setTimeout(()=>{
+    clearInterval(iv);
+    document.getElementById('loading').style.display='none';
+    const d=findCase(q);
+    if(d) showResult(d);
+    else{ showNotFound(q); }
+  },1400);
+}
+
+// 자동 유형 분류 함수
+function autoClassifyType(d){
+  // 수동 유형 고정
+  if(d.forceType){
+    const map = {
+      '데이터 기사량 부족': {type:'데이터 기사량 부족', scoreColor:'#C8A8E9', badgeBg:'rgba(200,168,233,0.12)', badgeColor:'#C8A8E9', verdict:d.verdict||'기사 데이터가 부족하여 유형 분류가 어렵습니다'},
+      '데이터 수집 기간 부족': {type:'데이터 수집 기간 부족', scoreColor:'#F4C842', badgeBg:'rgba(244,200,66,0.12)', badgeColor:'#F4C842', verdict:d.verdict||'데이터 축적 후 재분류 예정입니다'},
+      '참여자 주도형': {type:'참여자 주도형', scoreColor:'#52C8A0', badgeBg:'rgba(82,200,160,0.15)', badgeColor:'#52C8A0', verdict:d.verdict||'참여자 주도형'},
+      '미디어 주도형': {type:'미디어 주도형', scoreColor:'#E8715A', badgeBg:'rgba(232,113,90,0.12)', badgeColor:'#E8715A', verdict:d.verdict||'미디어 주도형'},
+      '혼합형':        {type:'혼합형',        scoreColor:'#85C1E9', badgeBg:'rgba(133,193,233,0.12)', badgeColor:'#85C1E9', verdict:d.verdict||'혼합형'},
+    };
+    return map[d.forceType] || map['데이터 기사량 부족'];
+  }
+
+  // 데이터 기사량 부족: 주간 최대 기사수 < 20건
+  const maxMedia = Math.max(...d.media);
+  if(maxMedia < 20) return {
+    type:'데이터 기사량 부족', scoreColor:'#C8A8E9',
+    badgeBg:'rgba(200,168,233,0.12)', badgeColor:'#C8A8E9',
+    verdict:'기사 데이터가 부족하여 유형 분류가 어렵습니다'
+  };
+
+  // 데이터 수집 기간 부족: 피벗 이후 경과 주수 < 12주
+  const postPivotWeeks = d.labels.length - d.pivotIdx;
+  if(postPivotWeeks < 12) return {
+    type:'데이터 수집 기간 부족', scoreColor:'#F4C842',
+    badgeBg:'rgba(244,200,66,0.12)', badgeColor:'#F4C842',
+    verdict:'현재 진행 중인 트렌드 — 데이터 축적 후 재분류 예정입니다'
+  };
+
+  // 피벗 전 구간 비율 비교
+  const preStart = Math.max(0, d.pivotIdx - 6);
+  const preEnd = d.pivotIdx;
+  const preCombined = d.combined.slice(preStart, preEnd);
+  const preMedia = d.media.slice(preStart, preEnd);
+  const peakCombined = Math.max(...d.combined) || 1;
+  const peakMedia = Math.max(...d.media) || 1;
+  const searchRatio = preCombined.reduce((a,b)=>a+b,0) / peakCombined;
+  const mediaRatio  = preMedia.reduce((a,b)=>a+b,0)    / peakMedia;
+  const ratio = searchRatio / (mediaRatio || 0.001);
+
+  if(ratio >= 1.5) return {
+    type:'참여자 주도형', scoreColor:'#52C8A0',
+    badgeBg:'rgba(82,200,160,0.15)', badgeColor:'#52C8A0',
+    verdict:'검색이 기사보다 먼저 앞선 자생적 트렌드입니다'
+  };
+  if(ratio <= 0.67) return {
+    type:'미디어 주도형', scoreColor:'#E8715A',
+    badgeBg:'rgba(232,113,90,0.12)', badgeColor:'#E8715A',
+    verdict:'기사·마케팅이 검색을 앞선 미디어 주도 트렌드입니다'
+  };
+  return {
+    type:'혼합형', scoreColor:'#85C1E9',
+    badgeBg:'rgba(133,193,233,0.12)', badgeColor:'#85C1E9',
+    verdict:'검색과 기사가 비슷하게 함께 성장한 혼합형 트렌드입니다'
+  };
+}
+
+function showResult(d){
+  currentCase = d;
+  const r=document.getElementById('result');
+  r.style.display='block';
+
+  // 날짜 바 기본값 표시
+  const defaultPeriod = d.category==='음악'
+    ? '발화 이벤트 기준 전 6주 · 후 24주'
+    : '첫 공개일 기준 전 6주 · 후 12주';
+  const altLabel = d.altLabel || '다른 기준';
+  const altHint = d.alt ? ` — ${altLabel}(${d.alt.labels[0]} ~ ${d.alt.labels[d.alt.labels.length-1]})으로 바꿔보세요` : '';
+  document.getElementById('adj-info').textContent = `기본: ${defaultPeriod}${altHint}`;
+  document.getElementById('adj-info').style.color = 'var(--muted)';
+
+  // 날짜 입력창 초기화 (1950~2026 범위 제한)
+  const adjStart = document.getElementById('adj-start');
+  const adjEnd   = document.getElementById('adj-end');
+  adjStart.min = '1950-01-01'; adjStart.max = '2026-12-31';
+  adjEnd.min   = '1950-01-01'; adjEnd.max   = '2026-12-31';
+  if(!document.getElementById('dateStart').value){
+    adjStart.value = '';
+    adjEnd.value   = '';
+  }
+
+  // 자동 유형 분류
+  const classified = autoClassifyType(d);
+
+  // 헤더
+  document.getElementById('r-title').innerHTML=`<em>${d.title}</em>`;
+  const ds=document.getElementById('dateStart').value;
+  const de=document.getElementById('dateEnd').value;
+  const period = (ds&&de) ? `${ds} ~ ${de}` : d.period;
+  document.getElementById('r-meta').innerHTML=
+    `<span class="meta-tag">${d.category}</span><span class="meta-tag">${period}</span><span class="meta-tag">Google Trends · Naver DataLab · BigKinds</span>`;
+
+  // 부분분석 배너
+  document.getElementById('partial-banner').style.display = d.partial ? 'flex' : 'none';
+
+  // 유형 배지 카드 (점수 없음)
+  const badge=document.getElementById('r-badge');
+  badge.textContent=classified.type;
+  badge.style.background=classified.badgeBg;
+  badge.style.color=classified.badgeColor;
+  document.getElementById('r-verdict').textContent=classified.verdict;
+  document.getElementById('r-desc').textContent=d.desc;
+
+  // 디버그: TCI 점수 카드 (숨김 상태)
+  const sc=document.getElementById('r-score');
+  if(d.tci===null){
+    sc.innerHTML=d.algo?'N/A':'—'; sc.style.fontSize='48px';
+  } else {
+    sc.innerHTML=`${d.tci.toFixed(1)}<sup>/10</sup>`; sc.style.fontSize='';
+  }
+  sc.style.color=classified.scoreColor;
+  document.getElementById('debug-scores').textContent=
+    `발화선행성: ${d.init??'—'}  |  지속성: ${d.sust??'—'}  |  상관계수: ${d.corr??'—'} (r=${d.corr_r??'—'})`;
+
+  // 시계열 차트
+  if(chartObj) chartObj.destroy();
+  // CSS 변수 실시간 읽기 (모바일/다크 모드 대응)
+  const _s = getComputedStyle(document.documentElement);
+  const _cv = n => _s.getPropertyValue(n).trim();
+  const cChartBar   = _cv('--chart-bar')   || 'rgba(168,230,207,0.2)';
+  const cChartLine  = _cv('--chart-line')  || '#52C8A0';
+  const cChartFill  = _cv('--chart-fill')  || 'rgba(82,200,160,0.05)';
+  const cTooltipBg  = _cv('--tooltip-bg')  || 'rgba(15,15,17,0.95)';
+  const cTooltipBdr = _cv('--tooltip-border') || 'rgba(255,255,255,0.1)';
+  const cGrid       = _cv('--grid-color')  || 'rgba(255,255,255,0.06)';
+  const cTick       = _cv('--tick-color')  || '#888890';
+  chartObj = new Chart(document.getElementById('trendChart'),{
+    type:'bar',
+    'data':{labels:d.labels,datasets:[
+      {label:'미디어 기사수',data:d.media,backgroundColor:cChartBar,borderWidth:0,borderRadius:3,yAxisID:'y2',order:2},
+      {label:'통합 검색량',data:d.combined,type:'line',borderColor:cChartLine,backgroundColor:cChartFill,borderWidth:2,pointRadius:0,tension:0.4,fill:true,yAxisID:'y1',order:0}
+    ]},
+    'options':{responsive:true,maintainAspectRatio:false,
+      'plugins':{legend:{display:false},tooltip:{backgroundColor:cTooltipBg,borderColor:cTooltipBdr,borderWidth:1,titleColor:'#EEEEF0',bodyColor:'#888890',padding:10,callbacks:{title:items=>d.labels[items[0].dataIndex]}}},
+      'scales':{
+        'x':{ticks:{color:'#555560',font:{size:10},maxTicksLimit:5,maxRotation:45,minRotation:0,autoSkip:true},grid:{color:cGrid}},
+        'y1':{position:'left',min:0,ticks:{color:cTick,font:{size:10}},grid:{color:cGrid},title:{display:true,text:'검색량',color:'#555560',font:{size:10}}},
+        'y2':{position:'right',min:0,suggestedMax:Math.max(20, Math.max(...d.media)),ticks:{color:'#555560',font:{size:10}},grid:{display:false},title:{display:true,text:'기사수',color:'#555560',font:{size:10}}}
+      }
+    },
+    plugins:[{id:'pivot',afterDraw(chart){
+      const {ctx,chartArea,scales}=chart;
+      const x=scales.x.getPixelForValue(d.pivotIdx);
+      ctx.save();
+      // 노란 점선
+      ctx.setLineDash([4,4]);
+      ctx.strokeStyle='rgba(244,200,66,0.7)';
+      ctx.lineWidth=1.5;
+      ctx.beginPath();
+      ctx.moveTo(x,chartArea.top);
+      ctx.lineTo(x,chartArea.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // 발화 이벤트 텍스트
+      ctx.font='bold 10px Pretendard,sans-serif';
+      const label='발화 이벤트';
+      const tw=ctx.measureText(label).width;
+      const lx=Math.min(x+5, chartArea.right-tw-4);
+      ctx.fillStyle='rgba(244,200,66,0.95)';
+      ctx.fillText(label,lx,chartArea.top+14);
+      ctx.restore();
+    }}]
+  });
+
+  // 타임라인
+  document.getElementById('timeline-wrap').innerHTML=d.timeline.map((t,i)=>`
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${i===0?'#555560':i===d.timeline.length-1?classified.scoreColor:'#52C8A0'}"></div>
+      <div><div class="tl-date">${t.date}</div><div class="tl-text">${t.text}</div></div>
+    </div>`).join('');
+
+  // 결론
+  const vc=document.getElementById('verdict-card');
+  vc.style.background=classified.badgeBg.replace('0.12','0.08').replace('0.15','0.08');
+  vc.style.borderColor=classified.badgeColor+'44';
+  document.getElementById('v-title').style.color=classified.scoreColor;
+  // vTitle에서 점수 숫자 제거: "TCI 7.1 — 커뮤니티 주도형으로..." → "커뮤니티 주도형으로..."
+  const cleanTitle = d.vTitle.replace(/^TCI\s[\d.]+\s[—–-]+\s/,'');
+  document.getElementById('v-title').textContent=cleanTitle;
+  // vBody에서 점수 수치 참조 제거 (A=9.9, B=8.9 등 패턴)
+  const cleanBody = d.vBody
+    .replace(/\(A=[\d.]+,\s*B=[\d.]+\)/g,'')
+    .replace(/\s*\([가-힣\s]+가중치\)/g,'');
+  document.getElementById('v-body').innerHTML=cleanBody;
+
+  // 유형표 + 계산 방법 (중복 방지)
+  const ts=document.getElementById('type-section');
+  ts.innerHTML=`
+    <div class="type-table-card fu d5">
+      <div class="chart-title" style="margin-bottom:14px">TCI 유형 분류표</div>
+      ${TYPE_MAP.map(t=>`
+        <div class="type-row">
+          <div class="type-name" style="color:${t.color}"><span class="type-dot" style="background:${t.color}"></span>${t.type}</div>
+          <div class="type-desc">${t.desc}</div>
+          <div class="type-ex">${t.ex}</div>
+        </div>`).join('')}
+      <div style="margin-top:10px;font-size:11px;color:var(--muted)">* TCI는 트렌드의 옳고 그름을 판단하지 않습니다. 발화 경로를 유형화하는 도구입니다.</div>
+    </div>`;
+
+  // 애니메이션
+  r.querySelectorAll('.fu').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation='';});
+}
+
+function goHome(){
+  ['result','notfound'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('home').style.display='flex';
+  if(chartObj){chartObj.destroy();chartObj=null;}
+}
+
+
+// 유사 검색어 추천
+const SEARCH_HINTS = {
+  woodz:   ['woodz','우즈','drowning','드라우닝'],
+  리센느:  ['리센느','risenne','거제'],
+  러브어택:['러브어택','loveattack','love attack','rescene'],
+  블랙맘바:['에스파','aespa','블랙맘바','blackmamba'],
+  폴라럽:  ['엔하이픈','enhypen','폴라럽','polaroid'],
+  선업튀:  ['선업튀','선재','sunup'],
+  우영우:  ['우영우','변호사우영우','이상한변호사'],
+  파친코:  ['파친코','pachinko'],
+  외계인:  ['외계','alien','외계인'],
+  극한직업:['극한직업','extrem'],
+  지올팍:  ['지올팍','zior','christian'],
+};
+
+const CASE_LABELS = {
+  woodz:'WOODZ — Drowning', 리센느:'리센느 — LOVE ATTACK', 러브어택:'리센느 — LOVE ATTACK',
+  블랙맘바:'에스파 — Black Mamba', 폴라럽:'엔하이픈 — Polaroid Love',
+  선업튀:'선재 업고 튀어', 우영우:'이상한 변호사 우영우',
+  파친코:'파친코', 외계인:'외계+인 1부', 극한직업:'극한직업', 지올팍:'지올팍',
+};
+
+function getSuggestions(q){
+  const l = q.toLowerCase().replace(/\s/g,'');
+  return Object.entries(SEARCH_HINTS)
+    .filter(([key, hints]) => hints.some(h => l.includes(h) || h.includes(l)))
+    .map(([key]) => key);
+}
+
+function showNotFound(q){
+  document.getElementById('notfound').style.display='block';
+  const suggestions = getSuggestions(q);
+  const wrap = document.getElementById('nf-suggest-wrap');
+  if(suggestions.length > 0){
+    wrap.innerHTML = `<div class="nf-suggest">혹시 <em>${suggestions.map(k=>CASE_LABELS[k]).join(', ')}</em>를 찾으셨나요?</div>
+    <div class="chips" style="justify-content:center;margin-bottom:12px">
+      ${suggestions.map(k=>`<div class="chip" onclick="doSearch('${k}')">${CASE_LABELS[k]}</div>`).join('')}
+    </div>`;
+  } else {
+    wrap.innerHTML = '';
+  }
+}
+
+// 날짜 유효성 검사
+function isValidDate(str){
+  if(!str) return true;
+  return /^\d{4}-\d{2}-\d{2}$/.test(str) && !isNaN(new Date(str).getTime());
+}
+
+function applyDateAdjust(){
+  if(!currentCase) return;
+  const s = document.getElementById('adj-start').value;
+  let e = document.getElementById('adj-end').value;
+  const info = document.getElementById('adj-info');
+
+  if(!s){
+    info.textContent = '⚠ 시작일을 선택해주세요';
+    info.style.color = '#E8715A';
+    return;
+  }
+
+  // 종료일 미입력 시 카테고리 기준으로 자동 계산
+  let autoEnd = false;
+  if(!e){
+    const weeks = currentCase.category === '음악' ? 24 : 12;
+    const endDate = new Date(s);
+    endDate.setDate(endDate.getDate() + weeks * 7);
+    e = endDate.toISOString().slice(0, 10);
+    autoEnd = true;
+    document.getElementById('adj-end').value = e;
+  }
+
+  if(new Date(s) >= new Date(e)){
+    info.textContent = '⚠ 종료일이 시작일보다 늦어야 해요';
+    info.style.color = '#E8715A';
+    return;
+  }
+
+  // alt 데이터 자동 전환: 선택 기간이 alt 데이터 범위와 겹치면 뿅
+  let baseCase = currentCase;
+  if(currentCase.alt){
+    const altLabels = currentCase.alt.labels;
+    const altStart  = altLabels[0];
+    const altEnd    = altLabels[altLabels.length-1];
+    const overlap   = s <= altEnd && e >= altStart;
+    const mainStart = currentCase.labels[0];
+    const mainEnd   = currentCase.labels[currentCase.labels.length-1];
+    const mainOverlap = s <= mainEnd && e >= mainStart;
+
+    if(overlap && !mainOverlap){
+      // alt 기간에만 해당 → alt 데이터로 전환
+      baseCase = Object.assign({}, currentCase, currentCase.alt);
+    } else if(overlap && mainOverlap){
+      // 둘 다 겹치면 더 많이 겹치는 쪽 사용
+      const altDays  = (new Date(Math.min(new Date(e),new Date(altEnd))) - new Date(Math.max(new Date(s),new Date(altStart))));
+      const mainDays = (new Date(Math.min(new Date(e),new Date(mainEnd))) - new Date(Math.max(new Date(s),new Date(mainStart))));
+      if(altDays > mainDays) baseCase = Object.assign({}, currentCase, currentCase.alt);
+    }
+  }
+
+  // 날짜 범위에 맞게 데이터 슬라이싱
+  const labels   = baseCase.labels;
+  const startIdx = labels.findIndex(l => l >= s);
+  const endIdx   = labels.findLastIndex(l => l <= e);
+
+  if(startIdx === -1 || endIdx === -1 || startIdx > endIdx){
+    // alt가 있으면 안내 메시지에 범위 힌트 포함
+    const hint = currentCase.alt
+      ? `기본 데이터(${currentCase.labels[0]} ~ ${currentCase.labels[currentCase.labels.length-1]}) 또는 ${currentCase.altLabel||'다른 기준'} 데이터(${currentCase.alt.labels[0]} ~ ${currentCase.alt.labels[currentCase.alt.labels.length-1]}) 범위 내에서 선택해주세요`
+      : `데이터 범위: ${labels[0]} ~ ${labels[labels.length-1]}`;
+    info.textContent = `⚠ 선택한 기간에 데이터가 없어요. ${hint}`;
+    info.style.color = '#E8715A';
+    return;
+  }
+
+  const sliced = Object.assign({}, baseCase, {
+    labels:   baseCase.labels.slice(startIdx, endIdx+1),
+    combined: baseCase.combined.slice(startIdx, endIdx+1),
+    media:    baseCase.media.slice(startIdx, endIdx+1),
+    pivotIdx: Math.max(0, baseCase.pivotIdx - startIdx),
+    period:   `${s} ~ ${e}`,
+  });
+
+  info.style.color = '#52C8A0';
+  const isAlt = baseCase !== currentCase;
+  const autoNote = autoEnd ? ` (종료일 자동: ${currentCase.category==='음악'?'24':'12'}주 기준)` : '';
+  info.textContent = `${s} ~ ${e} 적용됨 (${endIdx-startIdx+1}주)${isAlt ? ` · ${currentCase.altLabel||'다른 기준'} 데이터` : ''}${autoNote}`;
+  document.getElementById('dateStart').value = s;
+  document.getElementById('dateEnd').value   = e;
+
+  showResult(sliced);
+}
+
+function resetDateAdjust(){
+  if(!currentCase) return;
+  document.getElementById('adj-start').value = '';
+  document.getElementById('adj-end').value = '';
+  document.getElementById('dateStart').value = '';
+  document.getElementById('dateEnd').value = '';
+  const info = document.getElementById('adj-info');
+  info.style.color = 'var(--muted)';
+  const defaultPeriod = currentCase.category==='음악' ? '전 6주 · 후 24주' : '전 6주 · 후 12주';
+  info.textContent = `기본값으로 복원 (${defaultPeriod})`;
+  showResult(currentCase);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('homeInput').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch(e.target.value);});
+
+  // 팝업
+  if(localStorage.getItem('tci-guide-seen')!=='1'){
+    document.getElementById('guide-modal').style.display='block';
+  }
+  document.getElementById('modal-confirm-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-confirm-btn').addEventListener('touchstart', function(e){
+    e.stopPropagation();
+  }, {passive:true});
+  document.getElementById('modal-confirm-btn').addEventListener('touchend', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    closeModal();
+  }, {passive:false});
+
+  // 디버그 토글: 결과 화면 제목 더블클릭
+  document.getElementById('result').addEventListener('dblclick', e=>{
+    if(e.target.closest('.result-kw')){
+      const card = document.getElementById('debug-tci-card');
+      card.style.display = card.style.display==='none' ? 'flex' : 'none';
+    }
+  });
+});
+
+// ── 테마 토글 ──────────────────────────────
+function toggleTheme(){
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.body.setAttribute('data-theme', next);
+  document.getElementById('tog-dark').classList.toggle('active', next === 'dark');
+  document.getElementById('tog-light').classList.toggle('active', next === 'light');
+  try { localStorage.setItem('tci-theme', next); } catch(e){}
+  document.cookie = 'tci-theme=' + next + ';path=/;max-age=31536000';
+  if(typeof currentCase !== 'undefined' && currentCase) showResult(currentCase);
+}
+
+// 버튼 active 상태 동기화
+(function(){
+  function getCookie(n){
+    var m = document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  var saved;
+  try { saved = localStorage.getItem('tci-theme'); } catch(e){}
+  if(!saved) saved = getCookie('tci-theme');
+  if(!saved) saved = 'dark';
+  document.getElementById(saved === 'light' ? 'tog-light' : 'tog-dark').classList.add('active');
+})();
+</script>
+</body>
+</html>
